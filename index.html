@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InstaAndYouTubeMate - Download Reels & Shorts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Reset default */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .logo {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            font-size: 26px;
+            margin-bottom: 10px;
+            color: #00ff99;
+        }
+        p {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f2f2f2;
+            color: #333;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00ff99;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #00cc7a;
+        }
+        #loading {
+            margin-top: 20px;
+            display: none;
+            font-size: 16px;
+            color: #00ff99;
+        }
+        .spinner {
+            margin: 10px auto;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #00ff99;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="https://i.postimg.cc/4xkK8JKj/Chat-GPT-Image-Apr-28-2025-12-07-54-AM.png" class="logo" alt="InstaTubeMate Logo">
+ <!-- Change to your real logo if you have -->
+    <h1>InstaTubeMate</h1>
+    <p>Download Instagram Reels & YouTube Shorts Easily</p>
+
+    <input type="text" id="urlInput" placeholder="Paste your link here">
+    <button onclick="download()">Download Now</button>
+
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>Downloading... Please wait.</p>
+    </div>
+
+    <footer>Made with ❤️ by InstaTubeMate</footer>
+</div>
+
+<script>
+    async function download() {
+        const url = document.getElementById('urlInput').value.trim();
+        const backendUrl = 'https://y2mate-production.up.railway.app'; // <-- replace with your real backend Railway URL
+
+        if (url === "") {
+            alert("Please paste a valid Instagram Reel or YouTube Shorts link.");
+            return;
+        }
+
+        document.getElementById('loading').style.display = 'block';
+
+        try {
+            const response = await fetch(`${backendUrl}/download`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = "InstaAndYouTubeMate-Video.mp4"; // default download filename
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                document.getElementById('loading').style.display = 'none';
+                setTimeout(() => { alert("✅ Download started successfully!"); }, 300);
+            } else {
+                throw new Error("Download failed.");
+            }
+        } catch (error) {
+            document.getElementById('loading').style.display = 'none';
+            alert("❌ Error downloading. Please check the link or try again.");
+        }
+    }
+</script>
+
+</body>
+</html>
